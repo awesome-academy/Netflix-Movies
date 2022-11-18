@@ -13,6 +13,10 @@ final class MainTabBarViewController: UITabBarController {
         super.viewDidLoad()
         view.backgroundColor = .red
         
+        setupTabBar()
+    }
+    
+    private func setupTabBar() {
         let viewHome = UINavigationController(rootViewController: HomeViewController())
         let viewUpcoming = UINavigationController(rootViewController: UpcomingViewController())
         let viewSearch = UINavigationController(rootViewController: SearchViewController())
