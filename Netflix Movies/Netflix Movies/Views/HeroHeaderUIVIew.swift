@@ -2,7 +2,7 @@
 //  HeroHeaderUIVIew.swift
 //  Netflix Movies
 //
-//  Created by Quang Khánh on 16/11/2022.
+//  Created by Khanh on 16/11/2022.
 //
 
 import UIKit
