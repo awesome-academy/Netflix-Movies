@@ -8,7 +8,15 @@
 import Foundation
 
 struct TitleResponse: Codable {
+    let page: Int
+    let totalPages: Int
+    let totalResults: Int
     let results: [Title]
+    enum CodingKeys: String, CodingKey {
+        case page, results
+        case totalPages = "total_pages"
+        case totalResults = "total_results"
+    }
 }
 
 struct Title: Codable {
@@ -34,4 +42,5 @@ struct Title: Codable {
         case vote_average
     }
 }
+
 

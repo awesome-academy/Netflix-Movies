@@ -15,7 +15,7 @@ enum Sections: Int {
     case TopRaced = 4
 }
 
-final class HomeViewController: UIViewController {
+final class HomeViewController: UIViewController  {
     
     let sectionTitles: [String] = ["Trending Movies", "Trending TV",  "Popular", "Upcomming Movies", "Top Raced"]
     let numberOfSelection = 40
