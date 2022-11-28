@@ -9,20 +9,19 @@ import UIKit
 
 final class UpcomingViewController: UIViewController {
     
-    let titleRepository = TitleRepository()
-    private var listUpcoming: [Title] = [Title]()
+    var titles: [Title] = [Title]()
+    var titleRepository = TitleRepository()
     
     private let upcomingTable: UITableView = {
-       let table = UITableView()
-        table.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
+        let table = UITableView()
+        table.register(TitleTableViewCell.self, forCellReuseIdentifier: TitleTableViewCell.defaultReuseIdentifier)
         return table
     }()
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
         view.backgroundColor = .systemBackground
-        title = "Upcomming"
+        title = "Upcoming"
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationController?.navigationItem.largeTitleDisplayMode = .always
         
@@ -33,15 +32,20 @@ final class UpcomingViewController: UIViewController {
         fetchUpcoming()
     }
     
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        upcomingTable.frame = view.bounds
+    }
+    
     private func fetchUpcoming() {
-        titleRepository.getData(urlApi: "\(Constants.baseURL)/3/movie/upcoming?api_key=\(APICaller.API_KEY)") { [weak self] (data, error) -> (Void) in
+        titleRepository.getData(urlApi: "\(Constants.baseURL)/3/trending/movie/day?api_key=\(APICaller.API_KEY)") { [weak self] (data, error) in
             guard let self = self else { return }
             if let _ = error {
                 return
             }
             if let data = data {
                 DispatchQueue.main.async {
-                    self.listUpcoming = data
+                    self.titles = data
                     self.upcomingTable.reloadData()
                 }
             }
@@ -51,12 +55,20 @@ final class UpcomingViewController: UIViewController {
 
 extension UpcomingViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return listUpcoming.count
+        return titles.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-        cell.textLabel?.text = listUpcoming[indexPath.row].originalName ?? listUpcoming[indexPath.row].originalTitle ?? "Unkown"
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: TitleTableViewCell.defaultReuseIdentifier, for: indexPath) as? TitleTableViewCell else {
+            return UITableViewCell()
+        }
+        
+        let title = titles[indexPath.row]
+        cell.configuge(title: TitleViewModel(titleName: title.originalName ?? title.originalTitle ?? "" , posterURL: title.posterPath))
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 140
     }
 }

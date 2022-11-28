@@ -9,6 +9,7 @@ import Foundation
 
 struct Constants {
     static let baseURL = "https://api.themoviedb.org"
+    static let urlImage = "https://image.tmdb.org/t/p/w500/"
 }
 
 final class APICaller {
@@ -23,11 +24,11 @@ final class APICaller {
     static var API_KEY: String {
         get {
             guard let filePath = Bundle.main.path(forResource: "API-Keys", ofType: "plist") else {
-                fatalError("Couldn't find file 'API-Keys.plist'.")
+                return "Couldn't find key"
             }
             let plist = NSDictionary(contentsOfFile: filePath)
             guard let value = plist?.object(forKey: "API_KEY") as? String else {
-                fatalError("Couldn't find key 'API_KEY' in 'API-Keys.plist'.")
+                return "Couldn't find key"
             }
             return value
         }
