@@ -9,6 +9,9 @@ import Foundation
 
 struct Constants {
     static let baseURL = "https://api.themoviedb.org"
+    static let urlImage = "https://image.tmdb.org/t/p/w500/"
+    static let urlSearch = "\(Constants.baseURL)/3/discover/movie?api_key=\(APICaller.API_KEY)&language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false&page=1&with_watch_monetization_types=flatrate"
+    
 }
 
 final class APICaller {
@@ -23,11 +26,11 @@ final class APICaller {
     static var API_KEY: String {
         get {
             guard let filePath = Bundle.main.path(forResource: "API-Keys", ofType: "plist") else {
-                fatalError("Couldn't find file 'API-Keys.plist'.")
+                return "Couldn't find key"
             }
             let plist = NSDictionary(contentsOfFile: filePath)
             guard let value = plist?.object(forKey: "API_KEY") as? String else {
-                fatalError("Couldn't find key 'API_KEY' in 'API-Keys.plist'.")
+                return "Couldn't find key"
             }
             return value
         }
@@ -35,6 +38,49 @@ final class APICaller {
     
     func getJSON<T: Codable>(urlApi: String, completion: @escaping (T?, Error?) -> Void) {
         guard let url = URL(string: urlApi) else {
+            return
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = MethodRequest.get.rawValue
+        
+        let task = session.dataTask(with: request) { (data: Data?, response: URLResponse?, error: Error?) in
+            
+            if let error = error {
+                DispatchQueue.main.async {
+                    completion(nil, error)
+                }
+                return
+            }
+            
+            guard let httpResponse = response as? HTTPURLResponse else {
+                completion(nil, RequestError.badResponse)
+                return
+            }
+            
+            guard (200...299).contains(httpResponse.statusCode) else {
+                completion(nil, RequestError.badStatusCode(httpResponse.statusCode))
+                return
+            }
+            
+            guard let data = data else {
+                completion(nil, RequestError.badData)
+                return
+            }
+            
+            do {
+                let results = try JSONDecoder().decode(T.self, from: data)
+                completion(results, nil)
+            }
+            catch let error {
+                print(error)
+            }
+        }
+        task.resume()
+    }
+    
+    func getSearch<T: Codable>(with query: String, url: String, completion: @escaping (T?, Error?) -> Void) {
+        guard let url = URL(string: url) else {
             return
         }
         

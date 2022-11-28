@@ -11,4 +11,5 @@ protocol RepositoryType {
     associatedtype T
     
     func getData(urlApi: String, completion: @escaping ([T]?, Error?) -> Void)
+    func search(with query: String, completion: @escaping ([T]?, Error?) -> Void)
 }
