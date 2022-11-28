@@ -9,7 +9,6 @@ import UIKit
 
 final class CollectionViewTableViewCell: UITableViewCell, ReusableView {
 
-    let identifier = CollectionViewTableViewCell.defaultReuseIdentifier
     private var titles: [Title] = [Title]()
         
     let collectionView: UICollectionView = {

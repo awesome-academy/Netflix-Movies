@@ -6,7 +6,6 @@
 //
 
 import UIKit
-import SDWebImage
 
 final class TitleCollectionViewCell: UICollectionViewCell, ReusableView {
     
@@ -33,8 +32,7 @@ final class TitleCollectionViewCell: UICollectionViewCell, ReusableView {
     }
     
     func configuge(title: Title) {
-        print(title.posterPath)
-        if let logoURL = title.posterPath, let url = URL(string: "https://image.tmdb.org/t/p/w500/" + logoURL) {
+        if let logoURL = title.posterPath, let url = URL(string: Constants.urlImage + logoURL) {
             self.posterImageView.loadFrom(from: url)
         }
     }
