@@ -8,15 +8,29 @@
 import Foundation
 
 final class TitleRepository: RepositoryType {
-
-    private let network = APICaller.shared
+    
     typealias T = Title
+    typealias V = VideoElement
+    private let network = APICaller.shared
+    
+    func getMovie(with query: String, completion: @escaping ([VideoElement]?, Error?) -> Void) {
+        guard let query = query.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed) else {
+            return
+        }
+        network.getJSON(urlApi: "\(Constants.youtubeBaseURL)q=\(query)&key=\(APICaller.youtubeAPI)") { (data: YoutubeSearchResponse?, error)  in
+                if let data = data {
+                    let domain = data.items
+                        completion(domain, nil)
+                } else { completion(nil, error) }
+            }
+        }
+    
     func search(with query: String, completion: @escaping ([Title]?, Error?) -> Void) {
         guard let query = query.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed) else { return }
         network.getJSON(urlApi: "\(Constants.baseURL)/3/search/movie?api_key=\(APICaller.API_KEY)&query=\(query)") { (data: TitleResponse?, error)  in
-            print("data \(data?.results.count)")
+            print("data \(String(describing: data?.results.count))")
             if let data = data {
-                var domainTitle = data.results
+                let domainTitle = data.results
                 DispatchQueue.main.async {
                     completion(domainTitle, nil)
                 }

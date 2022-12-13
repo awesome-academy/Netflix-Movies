@@ -19,6 +19,7 @@ final class TitleTableViewCell: UITableViewCell, ReusableView {
     private let titleLable: UILabel = {
        let lable = UILabel()
         lable.numberOfLines = 2
+        lable.tintColor = .systemBackground
         lable.font = .boldSystemFont(ofSize: 18)
         lable.translatesAutoresizingMaskIntoConstraints = false
         return lable
@@ -48,12 +49,12 @@ final class TitleTableViewCell: UITableViewCell, ReusableView {
             titlesPosterUIImageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             titlesPosterUIImageView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 20),
             titlesPosterUIImageView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -20),
-            titlesPosterUIImageView.widthAnchor.constraint(equalToConstant: 94)
+            titlesPosterUIImageView.widthAnchor.constraint(equalToConstant: 95)
         ]
         
         let titleLableConstrains = [
-            titleLable.leadingAnchor.constraint(equalTo: titlesPosterUIImageView.trailingAnchor, constant: 20),
-            titleLable.trailingAnchor.constraint(equalTo: playTitleButton.leadingAnchor, constant: -20),
+            titleLable.leadingAnchor.constraint(equalTo: titlesPosterUIImageView.trailingAnchor, constant: 10),
+            titleLable.trailingAnchor.constraint(equalTo: playTitleButton.leadingAnchor, constant: 50),
             titleLable.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
         ]
         
@@ -67,15 +68,12 @@ final class TitleTableViewCell: UITableViewCell, ReusableView {
         NSLayoutConstraint.activate(playTitleButtonConstrains)
     }
     
-    public func configuge(title: TitleViewModel) {
-            print(title.titleName ?? "")
-            print(title.posterURL ?? "")
+    func configuge(title: TitleViewModel) {
         if let logoURL = title.posterURL, let url = URL(string: Constants.urlImage + logoURL) {
                 self.titlesPosterUIImageView.loadFrom(from: url)
                 self.titleLable.text = title.titleName
-            }
-        }
-    
+            } else { print("Error") }
+    }
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }

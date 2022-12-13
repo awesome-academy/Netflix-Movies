@@ -20,8 +20,11 @@ final class HeroHeaderUIVIew: UIView {
     private let playButton: UIButton = {
        let playButton = UIButton()
         playButton.setTitle("Play", for: .normal)
-        playButton.layer.borderColor = UIColor.white.cgColor
+        playButton.titleLabel!.font = UIFont(name: "AppleSDGothicNeo-Thin" , size: 25)
+        playButton.layer.borderColor = UIColor.red.cgColor
+        playButton.backgroundColor = .red
         playButton.layer.borderWidth = 3
+        playButton.setTitleColor(.white, for: .normal)
         playButton.layer.cornerRadius = 5
         playButton.translatesAutoresizingMaskIntoConstraints = false
         return playButton
@@ -31,7 +34,7 @@ final class HeroHeaderUIVIew: UIView {
         let infoButton = UIButton()
         infoButton.setBackgroundImage(UIImage(systemName: "info.circle"), for: .selected)
         infoButton.isSelected = true
-        infoButton.tintColor = .white
+        infoButton.tintColor = .darkGray
         infoButton.translatesAutoresizingMaskIntoConstraints = false
         return infoButton
     }()
@@ -40,7 +43,7 @@ final class HeroHeaderUIVIew: UIView {
         let myListButton = UIButton()
         myListButton.setBackgroundImage(UIImage(systemName: "plus"), for: .selected)
         myListButton.isSelected = true
-        myListButton.tintColor = .white
+        myListButton.tintColor = .darkGray
         myListButton.translatesAutoresizingMaskIntoConstraints = false
         return myListButton
     }()
@@ -60,21 +63,22 @@ final class HeroHeaderUIVIew: UIView {
         let playButtonConstrains = [
             playButton.centerXAnchor.constraint(equalTo: centerXAnchor),
             playButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -50),
-            playButton.widthAnchor.constraint(equalToConstant: 100)
+            playButton.widthAnchor.constraint(equalToConstant: 130),
+            playButton.heightAnchor.constraint(equalToConstant: 50)
         ]
         
         let infoButtonConstrains = [
             infoButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -90),
-            infoButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -50),
-            infoButton.widthAnchor.constraint(equalToConstant: 35),
-            infoButton.heightAnchor.constraint(equalToConstant: 35)
+            infoButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -55),
+            infoButton.widthAnchor.constraint(equalToConstant: 40),
+            infoButton.heightAnchor.constraint(equalToConstant: 40)
         ]
         
         let myListButtonConstrains = [
             myListButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 90),
-            myListButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -50),
-            myListButton.widthAnchor.constraint(equalToConstant: 35),
-            myListButton.heightAnchor.constraint(equalToConstant: 35)
+            myListButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -55),
+            myListButton.widthAnchor.constraint(equalToConstant: 40),
+            myListButton.heightAnchor.constraint(equalToConstant: 40)
         ]
         
         NSLayoutConstraint.activate(playButtonConstrains)
@@ -99,5 +103,10 @@ final class HeroHeaderUIVIew: UIView {
     
     required init(coder: NSCoder) {
         fatalError()
+    }
+    func configuge(title: TitleViewModel) {
+        if let logoURL = title.posterURL, let url = URL(string: Constants.urlImage + logoURL) {
+            self.heroImageView.loadFrom(from: url)
+        }
     }
 }
