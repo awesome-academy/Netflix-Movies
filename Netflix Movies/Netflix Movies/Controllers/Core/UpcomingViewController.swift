@@ -7,9 +7,13 @@
 
 import UIKit
 
+enum PhysicalConstants {
+    static let heightForRowAtItem = 140
+}
+
 final class UpcomingViewController: UIViewController {
     
-    private var titles: [Title] = [Title]()
+    private var titles = [Title]()
     private var titleRepository = TitleRepository()
     
     private let upcomingTable: UITableView = {
@@ -69,6 +73,26 @@ extension UpcomingViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 140
+        return CGFloat(PhysicalConstants.heightForRowAtItem)
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        
+        let title = titles[indexPath.row]
+        guard let titleName = title.originalTitle ?? title.originalName else {
+            return
+        }
+        titleRepository.getMovie(with: titleName) { [weak self] (data , error) in
+            if let videoElement = data {
+                DispatchQueue.main.async {
+                    let viewController = TitlePreviewViewController()
+                    viewController.configure(with: DetailMovieModel(title: titleName, youtubeView: videoElement[indexPath.count], titleOverview: title.overview ?? ""))
+                    self?.navigationController?.pushViewController(viewController, animated: true)
+                }
+            } else {
+                print(error?.localizedDescription ?? "Error")
+            }
+        }
     }
 }

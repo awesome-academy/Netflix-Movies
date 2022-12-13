@@ -10,8 +10,9 @@ import Foundation
 struct Constants {
     static let baseURL = "https://api.themoviedb.org"
     static let urlImage = "https://image.tmdb.org/t/p/w500/"
-    static let urlSearch = "\(Constants.baseURL)/3/discover/movie?api_key=\(APICaller.API_KEY)&language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false&page=1&with_watch_monetization_types=flatrate"
-    
+    static let youtubeBaseURL = "https://youtube.googleapis.com/youtube/v3/search?"
+    static let baseYoutube = "https://www.youtube.com/embed/"
+    static let urlDiscoverMovie = "\(baseURL)/3/discover/movie?api_key=\(APICaller.API_KEY)&language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false&page=1&with_watch_monetization_types=flatrate"
 }
 
 final class APICaller {
@@ -35,6 +36,19 @@ final class APICaller {
             return value
         }
     }
+    
+    static var youtubeAPI: String {
+            get {
+                guard let filePath = Bundle.main.path(forResource: "API-Keys", ofType: "plist") else {
+                    return "Couldn't find key"
+                }
+                let plist = NSDictionary(contentsOfFile: filePath)
+                guard let value = plist?.object(forKey: "YoutubeAPI_KEY") as? String else {
+                    return "Couldn't find key"
+                }
+                return value
+            }
+        }
     
     func getJSON<T: Codable>(urlApi: String, completion: @escaping (T?, Error?) -> Void) {
         guard let url = URL(string: urlApi) else {
@@ -79,8 +93,8 @@ final class APICaller {
         task.resume()
     }
     
-    func getSearch<T: Codable>(with query: String, url: String, completion: @escaping (T?, Error?) -> Void) {
-        guard let url = URL(string: url) else {
+    func getMovie<V: Codable>(urlApi: String, completion: @escaping (V?, Error?) -> Void) {
+        guard let url = URL(string: urlApi) else {
             return
         }
         
@@ -112,7 +126,7 @@ final class APICaller {
             }
             
             do {
-                let results = try JSONDecoder().decode(T.self, from: data)
+                let results = try JSONDecoder().decode(V.self, from: data)
                 completion(results, nil)
             }
             catch let error {

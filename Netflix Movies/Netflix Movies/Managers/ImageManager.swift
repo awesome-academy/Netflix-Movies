@@ -13,8 +13,8 @@ final class ImageManager {
     private let imageCache = NSCache<NSString, UIImage>()
 
     private init() { }
-
-    func fetchImage(url: URL, completion: @escaping (Result<UIImage, Error>) -> Void) {
+    
+    public func fetchImage(url: URL, completion: @escaping (Result<UIImage, Error>) -> Void) {
         if let cachedImage = imageCache.object(forKey: url.absoluteString as NSString) {
             completion(.success(cachedImage))
             return

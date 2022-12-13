@@ -11,8 +11,7 @@ final class MainTabBarViewController: UITabBarController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .red
-        
+        view.backgroundColor = .systemBackground        
         setupTabBar()
     }
     
@@ -33,7 +32,6 @@ final class MainTabBarViewController: UITabBarController {
         viewDownload.tabBarItem.image = UIImage(systemName: "arrow.down.to.line")
         
         tabBar.tintColor = .label
-        
         setViewControllers([viewHome, viewUpcoming,viewSearch ,viewDownload], animated: true)
     }
 }
